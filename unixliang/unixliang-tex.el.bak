@@ -1,0 +1,16 @@
+(load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
+(require 'tex-mik)
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+;(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+;(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+;(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+;(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+;(setq reftex-plug-into-AUCTeX t)
+;(setq TeX-PDF-mode t)
+;; 用xetex引擎而不是默认的引擎（xetex对中文字体的支持好）
+(setq TeX-engine 'xetex)
+;; 产生pdf而不是dvi
+(setq TeX-PDF-mode t)
