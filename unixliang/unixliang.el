@@ -1,7 +1,10 @@
 
 
 
+(prefer-coding-system 'utf-8)
+(prefer-coding-system 'gb2312)
 
+(setq tab-width 4)
 
 ;; start org
 ;自动缩排
@@ -27,6 +30,9 @@
 (global-set-key (kbd "C-t") 'helm-gtags-pop-stack)
 (global-set-key (kbd "C-c r") 'helm-gtags-find-rtag)
 (global-set-key (kbd "C-c f") 'helm-gtags-find-files)
+(global-set-key (kbd "C-c e") 'helm-gtags-find-pattern)
+(global-set-key (kbd "C-c s") 'helm-gtags-find-symbol)
+(global-set-key (kbd "C-c t") 'helm-gtags-find-tag)
 (require 'helm-gtags)
 (add-hook 'c-mode-common-hook
           (lambda ()
