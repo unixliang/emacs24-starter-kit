@@ -28,7 +28,7 @@
 
 
 
-;; start helm-gtags/auto-complete
+;; start helm-gtags
 (global-set-key (kbd "C-]") 'helm-gtags-find-tag-from-here)
 (global-set-key (kbd "C-t") 'helm-gtags-pop-stack)
 (global-set-key (kbd "C-c r") 'helm-gtags-find-rtag)
@@ -60,14 +60,8 @@
               (linum-mode 1)
               (setq linum-format "%d ")
               (helm-gtags-mode 1)
-              ;(auto-complete-mode 1)
-              ;(ac-comphist 1)
-              ;(ac-auto-show-menu 0.1)
-                                        ;(ac-delay 0.1)
-              ;(ac-fuzzy-enable t)
-              
               )))
-;; end helm-gtags/auto-complete
+;; end helm-gtags
 
 
 
@@ -223,11 +217,84 @@
 	"Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.markdown\\'". markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'". markdown-mode))
-;(add-hook 'markdown-mode-hook (lambda () (setq truncate-lines nil)))
+
 
 (setq scroll-preserve-screen-position t
       scroll-conservatively 0)
 
-(setq auto-fill-mode 0)
+; uesless...
+;(add-hook 'markdown-mode-hook (lambda () (setq auto-fill-mode nil)))
+; useful!
+(add-hook 'markdown-mode-hook (lambda () (auto-fill-mode 0)))
 
 
+; split window horizontally (side-by-side) by default
+; (setq helm-split-window-default-side 'right)
+; (setq helm-split-window-default-side 'below)
+
+
+
+;; gnu global
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+              (gtags-mode 1))))
+(defun gtags-root-dir ()
+  "Returns GTAGS root directory or nil if doesn't exist."
+  (with-temp-buffer
+    (if (zerop (call-process "global" nil t nil "-pr"))
+        (buffer-substring (point-min) (1- (point-max)))
+      nil)))
+(defun gtags-update-single(filename)  
+  "Update Gtags database for changes in a single file"
+  (interactive)
+  (start-process "update-gtags" "update-gtags" "bash" "-c" (concat "cd " (gtags-root-dir) " ; gtags --single-update " filename )))
+(defun gtags-update-current-file()
+  (interactive)
+  (defvar filename)
+  (setq filename (replace-regexp-in-string (gtags-root-dir) "." (buffer-file-name (current-buffer))))
+  (gtags-update-single filename)
+  (message "Gtags updated for %s" filename))
+(defun gtags-update-hook()
+  "Update GTAGS file incrementally upon saving a file"
+  (when gtags-mode
+    (when (gtags-root-dir)
+      (gtags-update-current-file))))
+(add-hook 'after-save-hook 'gtags-update-hook)
+;; gnu global
+
+
+;; helm-imenu
+(global-set-key (kbd "C-h") 'helm-imenu)
+;; helm-imenu
+
+
+
+
+
+
+
+
+;; company + irony
+
+;(setq company-minimum-prefix-length 2)
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-irony))
+
+;; Define the modes/packages you need
+(require 'company)
+(require 'irony)
+(require 'company-c-headers)
+
+;; Enable company mode globally 
+(global-company-mode)
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'irony-mode)
+
+;; company + irony
+
+
+
+;; winner mode
+;; for undo/redo windoes operator
+(winner-mode 1)
