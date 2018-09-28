@@ -142,7 +142,7 @@
 
 
 (global-auto-revert-mode 1)
-
+(global-set-key [f5] 'revert-buffer)
 
 ; (setq default-fill-column 100)
 
@@ -278,18 +278,18 @@
 ;; company + irony
 
 ;(setq company-minimum-prefix-length 2)
-(eval-after-load 'company
-  '(add-to-list 'company-backends 'company-irony))
+;(eval-after-load 'company
+;  '(add-to-list 'company-backends 'company-irony))
 
 ;; Define the modes/packages you need
-(require 'company)
-(require 'irony)
-(require 'company-c-headers)
+;(require 'company)
+;(require 'irony)
+;(require 'company-c-headers)
 
 ;; Enable company mode globally 
-(global-company-mode)
-(add-hook 'c++-mode-hook 'irony-mode)
-(add-hook 'c-mode-hook 'irony-mode)
+;(global-company-mode)
+;(add-hook 'c++-mode-hook 'irony-mode)
+;(add-hook 'c-mode-hook 'irony-mode)
 
 ;; company + irony
 
@@ -298,3 +298,52 @@
 ;; winner mode
 ;; for undo/redo windoes operator
 (winner-mode 1)
+
+
+;; scroll half page
+;(global-set-key [(control ?v)]
+;                (lambda () (interactive (next-line (/ (window-height (selected-window)) 2)))))
+;(global-set-key [(meta ?v)]
+;                (lambda () (interactive (previous-line (/ (window-height (selected-window)) 2)))))
+
+;; no indent in namespace (only work in c++-mode)
+(defun my-c-setup ()
+   (c-set-offset 'innamespace [0]))
+(add-hook 'c++-mode-hook 'my-c-setup)
+;; open .h in c++-mode
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
+
+
+
+
+
+
+
+;; for rust begin
+
+;; Configure Emacs to activate racer when rust-mode starts:
+(add-hook 'rust-mode-hook #'racer-mode)
+(add-hook 'racer-mode-hook #'eldoc-mode)
+
+; TODO: rust-mode-map invalid?
+;(define-key rust-mode-map (kbd "C-]") 'racer-find-definition)
+;(define-key rust-mode-map (kbd "C-t") 'pop-tag-mark)
+
+;; for rust end
+
+
+
+;; for golang begin
+
+;(require 'go-guru)
+;(add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+
+; TODO: go-mode-map invalid?
+;(define-key go-mode-map (kbd "C-]") 'godef-jump)
+;(define-key go-mode-map (kbd "C-t") 'pop-tag-mark)
+
+;; for golang end
+
+;(add-hook 'go-mode-hook #'linum-on)
+(global-linum-mode 1)
